@@ -1,18 +1,164 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>XgoalBulgaria</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    /* CSS тук (вече вграден в документа, виж предишните промени) */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto', sans-serif; background-color: #f8f8f8; color: #333; }
+    header, footer { background-color: #000; color: #fff; text-align: center; padding: 1rem; }
+    .promo-banner { background-color: #fdb927; text-align: center; padding: 0.5rem; font-weight: bold; }
+    nav { background-color: #111; color: white; padding: 1rem; display: flex; justify-content: space-between; flex-wrap: wrap; }
+    .team-menu { background-color: #222; overflow-x: auto; padding: 1rem; }
+    .team-menu ul { display: flex; list-style: none; gap: 1rem; }
+    .team-menu li { color: white; font-size: 0.75rem; cursor: pointer; text-align: center; }
+    .logo { width: 50px; height: 50px; border-radius: 50%; background: #fff; padding: 5px; margin: auto; }
+    .container { display: flex; flex-wrap: wrap; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; padding: 2rem; flex: 2; }
+    .product-card { background: white; padding: 1rem; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
+    .product-card img { max-width: 100%; border-radius: 4px; }
+    .product-card button { background: black; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem; cursor: pointer; border-radius: 4px; }
+    .cart { background: white; padding: 1rem; max-width: 300px; flex: 1; border-left: 2px solid #eee; }
+    .cart ul { list-style: none; padding: 0; }
+    .cart li { margin-bottom: 10px; display: flex; justify-content: space-between; }
+    .order-form { display: none; background: white; padding: 1rem; margin: 2rem auto; max-width: 400px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .order-form input, .order-form textarea { width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 4px; border: 1px solid #ccc; }
+    .order-form button { width: 100%; padding: 10px; background: black; color: white; border: none; border-radius: 4px; }
+    footer .social-icons a { margin: 0 10px; color: white; text-decoration: none; }
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      .cart { max-width: 100%; border-left: none; border-top: 2px solid #eee; }
+    }
   </style>
 </head>
 <body>
-  <!-- Тук ще бъде целият HTML + JS + CSS, вграден напълно -->
-  <!-- Използва се структурата, която вече вградихме в canmore -->
-  <!-- Можеш да отвориш този файл директно в браузър -->
-  <p>Целият сайт е вече въведен в документа и се показва като статична HTML страница.</p>
+  <header>
+    <h1>XgoalBulgaria</h1>
+    <p>Онлайн магазин за фен тениски</p>
+  </header>
+  <div class="promo-banner">🚚 Безплатна доставка над 100 лв!</div>
+
+  <nav>
+    <h2>Категории по отбори</h2>
+    <input type="text" placeholder="Търси...">
+  </nav>
+
+  <div class="team-menu">
+    <ul>
+      <li onclick="filterTeam('all')"><div class="logo"><img src="https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" width="40" /></div>Всички</li>
+      <li onclick="filterTeam('barcelona')"><div class="logo"><img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" width="40" /></div>Барса</li>
+      <li onclick="filterTeam('realmadrid')"><div class="logo"><img src="https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" width="40" /></div>Реал</li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <main class="product-grid">
+      <div class="product-card barcelona">
+        <img src="https://via.placeholder.com/200x200?text=Барса" />
+        <h3>Барселона - Дизайн 1</h3>
+        <p>79.99 лв</p>
+        <button onclick="addToCart('Барселона - Дизайн 1', 79.99)">Купи</button>
+      </div>
+      <div class="product-card realmadrid">
+        <img src="https://via.placeholder.com/200x200?text=Реал" />
+        <h3>Реал Мадрид - Черна</h3>
+        <p>79.99 лв</p>
+        <button onclick="addToCart('Реал Мадрид - Черна', 79.99)">Купи</button>
+      </div>
+    </main>
+
+    <aside class="cart">
+      <h3>Количка</h3>
+      <ul id="cart-list"></ul>
+      <div><strong>Общо:</strong> <span id="cart-total">0.00</span> лв</div>
+      <button onclick="showOrderForm()">Поръчай</button>
+    </aside>
+  </div>
+  <section class="order-form" id="order-form">
+    <h3>Форма за поръчка</h3>
+    <input type="text" id="name" placeholder="Име" />
+    <input type="tel" id="phone" placeholder="Телефон" />
+    <input type="text" id="address" placeholder="Адрес" />
+    <textarea id="comment" placeholder="Коментар"></textarea>
+    <button onclick="submitOrder()">Изпрати</button>
+  </section>
+
+  <footer>
+    &copy; 2025 XgoalBulgaria
+    <div class="social-icons">
+      <a href="https://instagram.com/xgoalbulgaria" target="_blank">Instagram</a>
+      <a href="https://tiktok.com/@xgoalbulgaria" target="_blank">TikTok</a>
+    </div>
+  </footer>
+
+  <script>
+    const TELEGRAM_BOT_TOKEN = 'AAEQCVK4jaK7JFmqQkP815EebJCnd6ijK6s';
+    const TELEGRAM_CHAT_ID = '5430379769';
+    let cart = [];
+
+    function filterTeam(team) {
+      document.querySelectorAll('.product-card').forEach(p => {
+        p.style.display = team === 'all' || p.classList.contains(team) ? 'block' : 'none';
+      });
+    }
+
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      renderCart();
+    }
+
+    function renderCart() {
+      const list = document.getElementById('cart-list');
+      const total = document.getElementById('cart-total');
+      list.innerHTML = '';
+      let sum = 0;
+      cart.forEach((item, i) => {
+        sum += item.price;
+        list.innerHTML += `<li>${item.name} - ${item.price.toFixed(2)} лв <button onclick="removeItem(${i})">x</button></li>`;
+      });
+      total.textContent = sum.toFixed(2);
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    function showOrderForm() {
+      document.getElementById('order-form').style.display = 'block';
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function submitOrder() {
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const address = document.getElementById('address').value;
+      const comment = document.getElementById('comment').value;
+
+      if (!name || !phone || !address) {
+        alert('Моля попълни всички полета!');
+        return;
+      }
+
+      let msg = `🛍 Нова поръчка от сайта XgoalBulgaria:%0A`;
+      msg += `👤 ${name}%0A📞 ${phone}%0A🏠 ${address}%0A`;
+      if (comment) msg += `💬 ${comment}%0A`;
+      msg += `📦 Продукти:%0A`;
+      cart.forEach(i => { msg += `• ${i.name} - ${i.price} лв%0A`; });
+      msg += `💰 Общо: ${cart.reduce((s, i) => s + i.price, 0).toFixed(2)} лв`;
+
+      fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${msg}`)
+        .then(() => {
+          alert('Поръчката е изпратена!');
+          cart = [];
+          renderCart();
+          document.getElementById('order-form').reset();
+          document.getElementById('order-form').style.display = 'none';
+        })
+        .catch(() => alert('Грешка при изпращане!'));
+    }
+  </script>
 </body>
 </html>
